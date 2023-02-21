@@ -1,5 +1,6 @@
 #(©)Codexbotz
 
+import contextlib
 from pyrogram import __version__
 from bot import Bot
 from config import OWNER_ID
@@ -22,7 +23,5 @@ async def cb_handler(client: Bot, query: CallbackQuery):
         )
     elif data == "close":
         await query.message.delete()
-        try:
+        with contextlib.suppress(Exception):
             await query.message.reply_to_message.delete()
-        except:
-            pass
