@@ -5,6 +5,7 @@
 
 import os
 import asyncio
+import contextlib
 from pyrogram import Client, filters, __version__
 from pyrogram.enums import ParseMode
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
@@ -126,7 +127,7 @@ async def not_joined(client: Client, message: Message):
                 url = client.invitelink)
         ]
     ]
-    try:
+    with contextlib.suppress(IndexError):
         buttons.append(
             [
                 InlineKeyboardButton(
@@ -135,20 +136,19 @@ async def not_joined(client: Client, message: Message):
                 )
             ]
         )
-    except IndexError:
-        pass
-
     await message.reply(
-        text = FORCE_MSG.format(
-                first = message.from_user.first_name,
-                last = message.from_user.last_name,
-                username = None if not message.from_user.username else '@' + message.from_user.username,
-                mention = message.from_user.mention,
-                id = message.from_user.id
-            ),
-        reply_markup = InlineKeyboardMarkup(buttons),
-        quote = True,
-        disable_web_page_preview = True
+        text=FORCE_MSG.format(
+            first=message.from_user.first_name,
+            last=message.from_user.last_name,
+            username=f'@{message.from_user.username}'
+            if message.from_user.username
+            else None,
+            mention=message.from_user.mention,
+            id=message.from_user.id,
+        ),
+        reply_markup=InlineKeyboardMarkup(buttons),
+        quote=True,
+        disable_web_page_preview=True,
     )
 
 @Bot.on_message(filters.command('users') & filters.private & filters.user(ADMINS))
@@ -167,7 +167,7 @@ async def send_text(client: Bot, message: Message):
         blocked = 0
         deleted = 0
         unsuccessful = 0
-        
+
         pls_wait = await message.reply("<i>Broadcasting Message.. This will Take Some Time</i>")
         for chat_id in query:
             try:
@@ -185,9 +185,8 @@ async def send_text(client: Bot, message: Message):
                 deleted += 1
             except:
                 unsuccessful += 1
-                pass
             total += 1
-        
+
         status = f"""<b><u>Broadcast Completed</u>
 
 Total Users: <code>{total}</code>
@@ -195,7 +194,7 @@ Successful: <code>{successful}</code>
 Blocked Users: <code>{blocked}</code>
 Deleted Accounts: <code>{deleted}</code>
 Unsuccessful: <code>{unsuccessful}</code></b>"""
-        
+
         return await pls_wait.edit(status)
 
     else:

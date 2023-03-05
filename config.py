@@ -8,7 +8,8 @@ import os
 import logging
 from logging.handlers import RotatingFileHandler
 
-
+from dotenv import load_dotenv
+load_dotenv()
 
 #Bot token @Botfather
 TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN", "")
@@ -88,3 +89,7 @@ about_text="<b>○ Creator : <a href='tg://user?id={OWNER_ID}'>This Person</a>\n
 ABOUT_TEXT = os.environ.get('ABOUT_TEXT', about_text)
 
 REDIRECT_WEBSITE = os.environ.get('REDIRECT_WEBSITE')
+
+MULITPLE_BOT_TOKENS = [x.strip() for x in os.environ.get("MULITPLE_BOT_TOKENS", "").split()]
+
+MULITPLE_BOT_TOKENS.append(TG_BOT_TOKEN)
