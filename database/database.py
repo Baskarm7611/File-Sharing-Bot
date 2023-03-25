@@ -23,7 +23,7 @@ async def add_user(user_id: int, bot_username: str = False):
 
 
 async def full_userbase():
-    return user_data.find()
+    return user_data.find().count_documents({})
 
 
 async def del_user(user_id: int):
