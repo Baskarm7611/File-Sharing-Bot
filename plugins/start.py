@@ -167,7 +167,7 @@ async def send_text(client: Bot, message: Message):
 
         pls_wait = await message.reply("<i>Broadcasting Message.. This will Take Some Time</i>")
         for chat_id in query:
-            if chat_id['bot_username'] == client.username:
+            if chat_id.get('bot_username') == client.username:
                 try:
                     await broadcast_msg.copy(chat_id['_id'])
                     successful += 1
